@@ -151,8 +151,7 @@ define(['module'], function (module) {
                     (parsed.ext ? '.' + parsed.ext : ''),
                 url = req.toUrl(nonStripName);
 
-            //Load the text. Use XHR if possible and in a browser.
-            if (!hasLocation) {
+                //Load the text. Use XHR if possible and in a browser.
                 text.get(url, function (content) {
                     text.finishLoad(name, parsed.strip, content, onLoad);
                 }, function (err) {
@@ -160,16 +159,7 @@ define(['module'], function (module) {
                         onLoad.error(err);
                     }
                 });
-            } else {
-                //Need to fetch the resource across domains. Assume
-                //the resource has been optimized into a JS module. Fetch
-                //by the module name + extension, but do not include the
-                //!strip part to avoid file system issues.
-                req([nonStripName], function (content) {
-                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
-                                    parsed.strip, content, onLoad);
-                });
-            }
+
         },
 
         write: function (pluginName, moduleName, write, config) {
