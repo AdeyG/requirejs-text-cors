@@ -55,7 +55,10 @@ define(['module'], function (module) {
         createXhr: masterConfig.createXhr || function () {
             //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
             var xhr, i, progId;
-            if (typeof XMLHttpRequest !== "undefined") {
+
+            if (typeof XDomainRequest !== "undefined") {
+                return new XDomainRequest();
+            } else if (typeof XMLHttpRequest !== "undefined") {
                 return new XMLHttpRequest();
             } else if (typeof ActiveXObject !== "undefined") {
                 for (i = 0; i < 3; i += 1) {
@@ -293,6 +296,20 @@ define(['module'], function (module) {
                     }
                 }
             };
+
+            // XDomainRequest support for IE
+            if(typeof XDomainRequest !== "undefined" && xhr instanceof XDomainRequest) {
+                xhr.onload = function() {
+                    callback(xhr.responseText);
+                };
+
+                xhr.onerror = function() {
+                    err = new Error(url);
+                    err.xhr = xhr;
+                    errback(err);
+                };
+            }
+
             xhr.send(null);
         };
     } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
