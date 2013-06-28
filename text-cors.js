@@ -270,9 +270,16 @@ define(['module'], function (module) {
                     err.xhr = xhr;
                     errback(err);
                 };
-            }
 
-            xhr.send(null);
+                // Empty event handlers needs to be there, because IE9 is flawed: http://rudovsky.blogspot.dk/2012/09/microsoft-shit-xdomainrequest.html
+                xhr.ontimeout = function () { };
+                xhr.onprogress = function() {};
+
+                xhr.send();
+
+            } else {
+                xhr.send(null);
+            }
         };
     } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
             typeof Packages !== 'undefined' && typeof java !== 'undefined')) {
