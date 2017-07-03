@@ -266,7 +266,7 @@ define(['module'], function (module) {
                 };
 
                 xhr.onerror = function() {
-                    err = new Error(url);
+                    var err = new Error(url);
                     err.xhr = xhr;
                     errback(err);
                 };
